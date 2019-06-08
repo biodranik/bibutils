@@ -1,0 +1,55 @@
+#
+# bibutils unit tests MAKEFILE
+#
+
+CFLAGS   = -I ../lib $(CFLAGSIN)
+LDFLAGS  = -L ../lib $(LDFLAGSIN)
+LDLIBS   = -lbibutils
+
+PROGS    = doi_test \
+           entities_test \
+           intlist_test \
+           slist_test \
+           str_test \
+           utf8_test
+
+all: $(PROGS)
+
+entities_test : entities_test.o
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+utf8_test : utf8_test.o
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+doi_test : doi_test.o
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+str_test : str_test.o
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+slist_test : slist_test.o
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+intlist_test : intlist_test.o
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+test: $(PROGS) FORCE
+	( LD_LIBRARY_PATH="../lib"; \
+	export LD_LIBRARY_PATH ; \
+	./str_test; \
+	./slist_test; \
+	./intlist_test; \
+	./entities_test; \
+	./utf8_test; \
+	./doi_test )
+
+clean:
+	rm -f *.o core 
+
+realclean:
+	rm -f *.o core $(PROGS)
+	@for p in ${PROGS}; \
+               do ( rm -f $$p${EXEEXT} ); \
+        done
+
+FORCE:
